@@ -3,7 +3,9 @@ from database import  insert_user
 from risk_calc import calculate_recommendations
 import yfinance as yf
 from flask import jsonify
-
+import smtplib
+from email.mime.text import MIMEText
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # define the app using Flask
 app = Flask(__name__)
@@ -48,14 +50,43 @@ def get_company_data():
     }
     return jsonify(data)
 
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+def send_email(email, symbol, threshold, current_price):
+    msg = MIMEText(f"The current price of {symbol} is {current_price}. It has exceeded the threshold of {threshold}.")
+    msg['Subject'] = f"{symbol} price alert!"
+    msg['From'] = 'your-email@example.com'
+    msg['To'] = email
+
+# Replace the placeholders with your SMTP server details
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587
+    smtp_user = 'your-smtp-username'
+    smtp_password = 'your-smtp-password'
+
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+
+def check_price(symbol, threshold, email):
+    stock = yf.Ticker(symbol)
+    current_price = stock.info['MarketPrice']
+
+    if current_price > threshold:
+        send_email(email, symbol, threshold, current_price)
+
 @app.route('/update_notification_preferences', methods=['POST'])
 def update_notification_preferences():
     email = request.form.get('email')
-    threshold = request.form.get('threshold')
+    threshold = float(request.form.get('threshold'))
     symbol = request.form.get('symbol')
+
+    # Schedule a job to check the price every minute
+    scheduler.add_job(check_price, 'interval', minutes=1, args=[symbol, threshold, email])
+
     # Save notification preferences to database or file system
     return 'Notification preferences updated successfully.'
-
-
 if __name__ == '__main__':
     app.run(debug=True)
