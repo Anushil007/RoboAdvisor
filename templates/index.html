@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Robo-Advisor Questionnaire</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+	<h1>Robo-Advisor Questionnaire</h1>
+    <form action="/process_form" method="post">
+	  <label for="age">Age:</label>
+	  <input type="text" id="age" name="age"><br><br>
+
+	  <label for="income">Income:</label>
+	  <input type="text" id="income" name="income"><br><br>
+
+	  <label for="experience">Investment Experience:</label>
+	  <select id="experience" name="experience">
+	    <option value="no_experience">No Experience</option>
+	    <option value="some_experience">Some Experience</option>
+	    <option value="experienced">Experienced</option>
+	  </select><br><br>
+
+	  <label for="horizon">Investment Horizon:</label>
+	  <select id="horizon" name="horizon">
+	    <option value="short_term">Short Term</option>
+	    <option value="medium_term">Medium Term</option>
+	    <option value="long_term">Long Term</option>
+	  </select><br><br>
+
+	  <label for="risk">Risk Tolerance:</label>
+	  <select id="risk" name="risk">
+	    <option value="low_risk">Low Risk</option>
+	    <option value="medium_risk">Medium Risk</option>
+	    <option value="high_risk">High Risk</option>
+	  </select><br><br>
+
+	  <label for="style">Investment Style:</label>
+	  <select id="style" name="style">
+	    <option value="conservative">Conservative</option>
+	    <option value="balanced">Balanced</option>
+	    <option value="aggressive">Aggressive</option>
+	  </select><br><br>
+
+	  <label for="products">Investment Products:</label><br>
+		<input type="checkbox" id="stocks" name="products[]" value="stocks">
+		<label for="stocks">Stocks</label><br>
+		<input type="checkbox" id="bonds" name="products[]" value="bonds">
+		<label for="bonds">Bonds</label><br>
+		<input type="checkbox" id="etfs" name="products[]" value="etfs">
+		<label for="etfs">ETFs</label><br>
+		<input type="checkbox" id="mutual_funds" name="products[]" value="mutual_funds">
+		<label for="mutual_funds">Mutual Funds</label><br><br>
+
+	  <label for="updates">Frequency of Updates:</label>
+	  <select id="updates" name="updates">
+	    <option value="daily">Daily</option>
+	    <option value="weekly">Weekly</option>
+	    <option value="monthly">Monthly</option>
+	  </select><br><br>
+
+	  <input type="submit" value="Submit">
+	</form>
+
+</body>
+</html>

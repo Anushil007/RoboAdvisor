@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Recommended Products</title>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+		
+		.container {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			height: 100vh;
+		}
+
+		.table-container {
+			width: 20%;
+			padding: 20px;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+		th, td {
+			text-align: left;
+			padding: 8px;
+			border-bottom: 1px solid #ddd;
+		}
+
+		th {
+			border-top: 1px solid #ddd;
+			border-bottom: none;
+		}
+
+		th:first-child, td:first-child {
+			border-left: 1px solid #ddd;
+		}
+
+		th:last-child, td:last-child {
+			border-right: 1px solid #ddd;
+		}
+
+		td:first-child {
+			border-right: 1px solid #ddd;
+		}
+
+		td:last-child {
+			border-right: none;
+		}
+
+		.chart-container {
+			display: flex;
+			flex-direction: column;
+			width: 40%;
+			height: 100vh;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.chart {
+			margin-top: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="table-container">
+			<h1>Recommended Products</h1>
+			<table>
+				<thead>
+					<tr>
+						<th>Product</th>
+						<th>Allocation</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for product, allocation in recommendations.items() %}
+					<tr>
+						<td>{{ product }}</td>
+						<td style="text-align:right;">{{ allocation }}%</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="chart-container">
+			<div class="chart">
+				<canvas id="pieChart" width="300" height="300"></canvas>
+			</div>
+			<div class="chart">
+				<canvas id="barChart" width="400" height="300"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		var pieData = {
+			labels: [
+				{% for product in recommendations %}
+					"{{ product }}",
+					{% endfor %}
+			],
+			datasets: [{
+				data: [
+					{% for allocation in recommendations.values() %}
+						{{ allocation }},
+					{% endfor %}
+				],
+				backgroundColor: [
+					'rgba(255, 99, 132, 0.2)',
+					'rgba(54, 162, 235, 0.2)',
+					'rgba(255, 206, 86, 0.2)',
+					'rgba(75, 192, 192, 0.2)',
+					'rgba(153, 102, 255, 0.2)',
+					'rgba(255, 159, 64, 0.2)'
+				],
+				borderColor: [
+					'rgba(255, 99, 132, 1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(255, 206, 86, 1)',
+					'rgba(75, 192, 192, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+				],
+				borderWidth: 1
+			}]
+		};
+
+		var pieOptions = {
+			title: {
+				display: true,
+				text: 'Recommended Products Allocation',
+				fontSize: 16
+			},
+			legend: {
+				position: 'bottom',
+				labels: {
+					fontSize: 14
+				}
+			},
+			maintainAspectRatio: false
+		};
+
+		var pieCtx = document.getElementById('pieChart').getContext('2d');
+		var pieChart = new Chart(pieCtx, {
+			type: 'pie',
+			data: pieData,
+			options: pieOptions
+		});
+
+		var barData = {
+			labels: [
+				{% for product in recommendations %}
+					"{{ product }}",
+				{% endfor %}
+			],
+			datasets: [{
+				label: 'Allocation',
+				data: [
+					{% for allocation in recommendations.values() %}
+						{{ allocation }},
+					{% endfor %}
+				],
+				backgroundColor: [
+					'rgba(255, 99, 132, 0.2)',
+					'rgba(54, 162, 235, 0.2)',
+					'rgba(255, 206, 86, 0.2)',
+					'rgba(75, 192, 192, 0.2)',
+					'rgba(153, 102, 255, 0.2)',
+					'rgba(255, 159, 64, 0.2)'
+				],
+				borderColor: [
+					'rgba(255, 99, 132, 1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(255, 206, 86, 1)',
+					'rgba(75, 192, 192, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+				],
+				borderWidth: 1
+			}]
+		};
+
+		var barOptions = {
+			title: {
+				display: true,
+				text: 'Recommended Products Allocation',
+				fontSize: 16
+			},
+			legend: {
+				display: false
+			},
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true,
+						fontSize: 14
+					}
+				}],
+				xAxes: [{
+					ticks: {
+						fontSize: 14
+					}
+				}]
+			},
+			maintainAspectRatio: false
+		};
+
+		var barCtx = document.getElementById('barChart').getContext('2d');
+		var barChart = new Chart(barCtx, {
+			type: 'bar',
+			data: barData,
+			options: barOptions
+		});
+	</script>
+    <p><a href="/analytics">View portfolio performance and set notification preferences.</a></p>
+</body>
+</html>

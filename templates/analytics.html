@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Portfolio Performance Tracker</title>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			// Retrieve portfolio data and display chart
+			$.ajax({
+				url: '/get_portfolio_data',
+				type: 'GET',
+				success: function(data) {
+					var labels = data.labels;
+					var values = data.values;
+					var ctx = document.getElementById('chart').getContext('2d');
+					var chart = new Chart(ctx, {
+						type: 'bar',
+						data: {
+							labels: labels,
+							datasets: [{
+								label: 'Portfolio Value',
+								data: values,
+								backgroundColor: 'rgba(54, 162, 235, 0.2)',
+								borderColor: 'rgba(54, 162, 235, 1)',
+								borderWidth: 1
+							}]
+						},
+						options: {
+							scales: {
+								yAxes: [{
+									ticks: {
+										beginAtZero: true
+									}
+								}]
+							}
+						}
+					});
+				}
+			});
+
+			// Handle form submission for notification preferences
+			$('#notification-form').submit(function(e) {
+				e.preventDefault();
+				var email = $('#email').val();
+				var threshold = $('#threshold').val();
+				$.ajax({
+					url: '/update_notification_preferences',
+					type: 'POST',
+					data: {
+						email: email,
+						threshold: threshold
+					},
+					success: function(data) {
+						alert('Notification preferences updated successfully.');
+					}
+				});
+
+				// Retrieve current prices and compare to threshold
+				$.ajax({
+					url: '/get_current_prices',
+					type: 'GET',
+					success: function(data) {
+						var prices = data.prices;
+						var symbols = data.symbols;
+						for (var i = 0; i < prices.length; i++) {
+							if (prices[i] > threshold) {
+								sendNotificationEmail(email, symbols[i], prices[i]);
+							}
+						}
+					}
+				});
+			});
+
+			// Function to send notification email
+			function sendNotificationEmail(email, symbol, price) {
+				// Use a server-side library or API to send email
+				alert('Notification email sent to ' + email + ' for ' + symbol + ' at ' + price + '.');
+			}
+		});
+	</script>
+</head>
+<body>
+	<h1>Portfolio Performance Tracker</h1>
+	<canvas id="chart"></canvas>
+	<h2>Notification Preferences</h2>
+	<form id="notification-form">
+		<label for="email">Email:</label>
+		<input type="email" id="email" name="email"><br>
+		<label for="threshold">Threshold:</label>
+		<input type="number" id="threshold" name="threshold" min="0" max="100"><br>
+		<input type="submit" value="Update Preferences">
+	</form>
+</body>
+</html>
