@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from scipy.optimize import minimize
 
-def calculate_recommendations(age, income, experience, horizon, risk, style, products, updates):
+def calculate_recommendations(age, income, experience, horizon, risk, style, products):
 
     # Connect to the SQLite database
     conn = sqlite3.connect('mydatabase.db')

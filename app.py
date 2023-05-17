@@ -28,12 +28,12 @@ def process_form():
     risk = request.form['risk']
     style = request.form['style']
     products = request.form.getlist('products[]')
-    updates = request.form['updates']
+    #updates = request.form['updates']
 
     # Store the data in a SQLite database
      # Store the data in the database
-    insert_user(age, income, experience, horizon, risk, style, products, updates)
-    recommendations = calculate_recommendations(age, income, experience, horizon, risk, style, products, updates)
+    insert_user(age, income, experience, horizon, risk, style, products)
+    recommendations = calculate_recommendations(age, income, experience, horizon, risk, style, products)
 
     return render_template('results.html', recommendations=recommendations)
 

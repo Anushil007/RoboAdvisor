@@ -15,8 +15,7 @@ def create_users_table():
                   horizon INTEGER,
                   risk TEXT,
                   style TEXT,
-                  products TEXT,
-                  updates INTEGER)''')
+                  products TEXT)''')
 
     # Save (commit) the changes
     conn.commit()
@@ -24,7 +23,7 @@ def create_users_table():
     # Close the connection
     conn.close()
 
-def insert_user(age, income, experience, horizon, risk, style, products, updates):
+def insert_user(age, income, experience, horizon, risk, style, products):
     # Connect to database
     conn = sqlite3.connect('mydatabase.db')
 
@@ -36,7 +35,7 @@ def insert_user(age, income, experience, horizon, risk, style, products, updates
     product_str = ','.join(products)
 
     # Insert data into table
-    c.execute('INSERT INTO users (age, income, experience, horizon, risk, style, products, updates) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (age, income, experience, horizon, risk, style, product_str, updates))
+    c.execute('INSERT INTO users (age, income, experience, horizon, risk, style, products) VALUES (?, ?, ?, ?, ?, ?, ?)', (age, income, experience, horizon, risk, style, product_str))
 
     # Save (commit) the changes
     conn.commit()
