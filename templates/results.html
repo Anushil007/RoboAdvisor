@@ -5,67 +5,110 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<style>
 		body {
-			margin: 0;
-			padding: 0;
-		}
-		
-		.container {
-			display: flex;
-			flex-direction: row;
-			width: 100%;
-			height: 100vh;
-		}
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #333;
+    background-color: #f5f5f5;
+}
 
-		.table-container {
-			width: 20%;
-			padding: 20px;
-		}
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100vh;
+}
 
-		table {
-			border-collapse: collapse;
-			width: 100%;
-		}
+.table-container {
+    width: 20%;
+    padding: 20px;
+}
 
-		th, td {
-			text-align: left;
-			padding: 8px;
-			border-bottom: 1px solid #ddd;
-		}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
 
-		th {
-			border-top: 1px solid #ddd;
-			border-bottom: none;
-		}
+th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
 
-		th:first-child, td:first-child {
-			border-left: 1px solid #ddd;
-		}
+th {
+    border-top: 1px solid #ddd;
+    border-bottom: none;
+}
 
-		th:last-child, td:last-child {
-			border-right: 1px solid #ddd;
-		}
+th:first-child, td:first-child {
+    border-left: 1px solid #ddd;
+}
 
-		td:first-child {
-			border-right: 1px solid #ddd;
-		}
+th:last-child, td:last-child {
+    border-right: 1px solid #ddd;
+}
 
-		td:last-child {
-			border-right: none;
-		}
+td:first-child {
+    border-right: 1px solid #ddd;
+}
 
-		.chart-container {
-			display: flex;
-			flex-direction: column;
-			width: 40%;
-			height: 100vh;
-			align-items: center;
-			justify-content: center;
-		}
+td:last-child {
+    border-right: none;
+}
 
-		.chart {
-			margin-top: 20px;
-		}
-	</style>
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart {
+    margin-top: 20px;
+    width: 50%;
+    height: auto;
+}
+
+/* Pie chart style */
+#pieChart {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Bar chart style */
+#barChart {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.chart-container .chart canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+a {
+    color: #0077cc;
+}
+
+a:hover {
+    text-decoration: underline;
+}	</style>
 </head>
 <body>
 	<div class="container">
@@ -91,10 +134,10 @@
 		
 		<div class="chart-container">
 			<div class="chart">
-				<canvas id="pieChart" width="300" height="300"></canvas>
+				<canvas id="pieChart" width="50" height="50"></canvas>
 			</div>
 			<div class="chart">
-				<canvas id="barChart" width="400" height="300"></canvas>
+				<canvas id="barChart" width="50" height="50"></canvas>
 			</div>
 		</div>
 	</div>

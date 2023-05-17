@@ -1,42 +1,170 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Portfolio Performance Tracker</title>
+	<title>Stock Analytics</title>
+	<style>
+        /* CSS rules for the whole page */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.4;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="email"],
+        input[type="number"],
+        select {
+            display: block;
+            width: 20%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 16px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        input[type="submit"] {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1.4;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .box {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            background-color: #fff;
+            min-width: 160px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-option {
+            display: block;
+            padding: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .dropdown-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* CSS rules for the Chart.js chart */
+        #chart-container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #price-chart {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			// Retrieve portfolio data and display chart
-			$.ajax({
-				url: '/get_portfolio_data',
-				type: 'GET',
-				success: function(data) {
-					var labels = data.labels;
-					var values = data.values;
-					var ctx = document.getElementById('chart').getContext('2d');
-					var chart = new Chart(ctx, {
-						type: 'bar',
-						data: {
-							labels: labels,
-							datasets: [{
-								label: 'Portfolio Value',
-								data: values,
-								backgroundColor: 'rgba(54, 162, 235, 0.2)',
-								borderColor: 'rgba(54, 162, 235, 1)',
-								borderWidth: 1
-							}]
-						},
-						options: {
-							scales: {
-								yAxes: [{
-									ticks: {
-										beginAtZero: true
-									}
+			// Handle form submission for company selection
+			$('#company-form').submit(function(e) {
+				e.preventDefault();
+				var symbol = $('#symbol').val();
+				$.ajax({
+					url: '/get_company_data',
+					type: 'GET',
+					data: {
+						symbol: symbol
+					},
+					success: function(data) {
+						// Display analytical details using Chart.js
+						var ctx = document.getElementById('price-chart').getContext('2d');
+						var chart = new Chart(ctx, {
+							type: 'line',
+							data: {
+								labels: data.dates,
+								datasets: [{
+									label: 'Stock Price',
+									data: data.prices,
+									borderColor: 'rgba(75, 192, 192, 1)',
+            						borderWidth: 1,
+            						fill: false
 								}]
+							},
+							options: {
+								responsive: true,
+        						maintainAspectRatio: false,
+								scales: {
+									 xAxes: [{
+												type: 'time',
+												time: {
+													unit: 'year',
+													displayFormats: {
+														year: 'YYYY'
+												}
+											}
+											}],
+									yAxes: [{
+										ticks: {
+											beginAtZero: true,
+											stepsize : 25
+										}
+									}]
+								}
 							}
-						}
-					});
-				}
+						});
+					}
+				});
 			});
 
 			// Handle form submission for notification preferences
@@ -44,52 +172,48 @@
 				e.preventDefault();
 				var email = $('#email').val();
 				var threshold = $('#threshold').val();
+				var symbol = $('#symbol').val();
 				$.ajax({
 					url: '/update_notification_preferences',
 					type: 'POST',
 					data: {
 						email: email,
-						threshold: threshold
+						threshold: threshold,
+						symbol: symbol
 					},
 					success: function(data) {
 						alert('Notification preferences updated successfully.');
 					}
 				});
-
-				// Retrieve current prices and compare to threshold
-				$.ajax({
-					url: '/get_current_prices',
-					type: 'GET',
-					success: function(data) {
-						var prices = data.prices;
-						var symbols = data.symbols;
-						for (var i = 0; i < prices.length; i++) {
-							if (prices[i] > threshold) {
-								sendNotificationEmail(email, symbols[i], prices[i]);
-							}
-						}
-					}
-				});
 			});
-
-			// Function to send notification email
-			function sendNotificationEmail(email, symbol, price) {
-				// Use a server-side library or API to send email
-				alert('Notification email sent to ' + email + ' for ' + symbol + ' at ' + price + '.');
-			}
 		});
 	</script>
 </head>
 <body>
-	<h1>Portfolio Performance Tracker</h1>
-	<canvas id="chart"></canvas>
+	<h1>Stock Analytics</h1>
+	<form id="company-form">
+		<label for="symbol">Select a stock company:</label>
+	<select id="symbol" name="symbol">
+		<option value="AAPL">Apple Inc.</option>
+		<option value="GOOG">Alphabet Inc.</option>
+		<option value="AMZN">Amazon.com Inc.</option>
+		<option value="FB">Facebook Inc.</option>
+		<option value="MSFT">Microsoft Corporation</option>
+		<option value="TSLA">Tesla Inc.</option>
+	</select>
+	<input type="submit" value="View Analytics">
+	</form>
+	<div id="chart-container">
+		<canvas id="price-chart" height="500" width="600"></canvas>
+	</div>
 	<h2>Notification Preferences</h2>
 	<form id="notification-form">
 		<label for="email">Email:</label>
 		<input type="email" id="email" name="email"><br>
 		<label for="threshold">Threshold:</label>
 		<input type="number" id="threshold" name="threshold" min="0" max="100"><br>
-		<input type="submit" value="Update Preferences">
+		<input type="hidden" id="symbol" name="symbol" value="">
+		 <input type="submit" value="Update Preferences">
 	</form>
 </body>
 </html>
