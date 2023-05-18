@@ -6,6 +6,7 @@ from flask import jsonify
 import smtplib
 from email.mime.text import MIMEText
 from apscheduler.schedulers.background import BackgroundScheduler
+import os
 
 # define the app using Flask
 app = Flask(__name__)
@@ -62,8 +63,8 @@ def send_email(email, symbol, threshold, current_price):
 # Replace the placeholders with your SMTP server details
     smtp_server = 'smtp.gmail.com'
     smtp_port = 587
-    smtp_user = 'your-smtp-username'
-    smtp_password = 'your-smtp-password'
+    smtp_user = "ga819544@gmail.com"
+    smtp_password = os.environ.get('PASSWORD')
 
     with smtplib.SMTP(smtp_server, smtp_port) as server:
         server.starttls()
