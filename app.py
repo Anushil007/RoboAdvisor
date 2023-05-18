@@ -37,6 +37,7 @@ def process_form():
      # Store the data in the database
     insert_user(age, income, experience, horizon, risk, style, products)
     recommendations = calculate_recommendations(age, income, experience, horizon, risk, style, products)
+    print(recommendations)
 
     return render_template('results.html', recommendations=recommendations)
 
